@@ -90,12 +90,31 @@ void print_CSR_graph (graph *G) {
 
 
 void process_layer() {
-
+  // if BAG_SIZE(in_bag) < GRAINSIZE
+  //   for each u in in_bag
+  //     parallel for each v in Adj[u]
+  //       if v.dist == -1
+  //         v.dist = d+1                  // benign race
+  //         BAG_INSERT(out_bag, v)
+  //   return
+  // new_bag = BAG_SPLIT(in_bag)
+  // spawn PROCESS_LAYER(new_bag, out_bag, d)
+  // PROCESS_LAYER(in_bag, out_bag, d)
+  // sync
 }
 
 
 void pbfs(int s, graph *G, int **levelp, int *nlevelsp, int **levelsizep, int **parentp) {
-
+  // parallel for each vertex v in V(G) - {v_0}
+  //   v.dist = -1
+  // v_0.dist = 0
+  // d = 0
+  // v_0 = BAG_CREATE()
+  // BAG_INSERT(V_0, v_0)
+  // while !BAG-IS-EMPTY(V_d)
+  //   V_d+1 = new reducer BAG_CREATE()
+  //   PROCESS_LAYER(revert V_d, V_d+1, d)
+  //   d = d+1
 }
 
 

@@ -87,3 +87,66 @@ void print_CSR_graph (graph *G) {
   if (G->ne > elimit) printf(" ...");
   printf("\n\n");
 }
+
+
+void process_layer() {
+
+}
+
+
+void pbfs(int s, graph *G, int **levelp, int *nlevelsp, int **levelsizep, int **parentp) {
+
+}
+
+
+int cilk_main (int argc, char* argv[]) {
+  graph *G;
+  int *level, *levelsize, *parent;
+  int *tail, *head;
+  int nedges;
+  int nlevels;
+  int startvtx;
+  int i, v, reached;
+
+  if (argc == 2) {
+    startvtx = atoi (argv[1]);
+  } else {
+    printf("usage:   bfstest <startvtx> < <edgelistfile>\n");
+    printf("example: cat sample.txt | ./bfstest 1\n");
+    exit(1);
+  }
+  nedges = read_edge_list (&tail, &head);
+  G = graph_from_edge_list (tail, head, nedges);
+  free(tail);
+  free(head);
+  print_CSR_graph (G);
+
+  printf("Starting vertex for BFS is %d.\n\n", startvtx);
+
+
+  struct timeval tv1, tv2;
+  double duration;
+
+  gettimeofday(&tv1, NULL);
+  pbfs(startvtx, G, &level, &nlevels, &levelsize, &parent);
+  gettimeofday(&tv2, NULL);
+
+  double start, end;
+  start = (double)tv1.tv_sec + (double)tv1.tv_usec/1000000.0;
+  end = (double)tv2.tv_sec + (double)tv2.tv_usec/1000000.0;
+
+  duration = end - start;
+  cout << "Time in seconds: " << duration << " seconds" << endl;
+
+
+  reached = 0;
+  for (i = 0; i < nlevels; i++) reached += levelsize[i];
+  printf("Breadth-first search from vertex %d reached %d levels and %d vertices.\n",
+    startvtx, nlevels, reached);
+  for (i = 0; i < nlevels; i++) printf("level %d vertices: %d\n", i, levelsize[i]);
+  if (G->nv < 20) {
+    printf("\n  vertex parent  level\n");
+    for (v = 0; v < G->nv; v++) printf("%6d%7d%7d\n", v, parent[v], level[v]);
+  }
+  printf("\n");
+}

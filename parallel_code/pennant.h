@@ -22,10 +22,12 @@ struct Node {
 class Pennant {
   Pennant();
   Pennant(int vertex);
-  ~Pennant();
 
-  Pennant* pennant_union();
+  Pennant* pennant_union(Pennant* y);
+  Pennant* full_adder(Pennant* y, Pennant* &z);
   Pennant* pennant_split();
+
+  Node* root;
 };
 
 #endif

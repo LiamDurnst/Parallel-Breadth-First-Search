@@ -23,8 +23,8 @@ class Pennant {
   Pennant();
   Pennant(int vertex);
 
-  Pennant* pennant_union(Pennant* y);
-  Pennant* full_adder(Pennant* y, Pennant* &z);
+  static Pennant* pennant_union(Pennant* x, Pennant* y);
+  static Pennant* full_adder(Pennant* x, Pennant* y, Pennant* &z);
   Pennant* pennant_split();
 
   Node* root;

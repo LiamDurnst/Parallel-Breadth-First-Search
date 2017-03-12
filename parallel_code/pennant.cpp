@@ -4,8 +4,8 @@ Pennant::Pennant() {
   this->root = NULL;
 }
 
-Pennant::Pennant(int value) {
-  this->root = new Node(value);
+Pennant::Pennant(int vertex) {
+  this->root = new Node(vertex);
 }
 
 Pennant* Pennant::pennant_union(Pennant* y) {

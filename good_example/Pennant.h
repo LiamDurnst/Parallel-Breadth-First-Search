@@ -18,7 +18,7 @@ extern "C++" {
     Node* left;
     Node* right;
     int item;
-    
+
     Node(){
       left = NULL;
       right = NULL;
@@ -38,10 +38,10 @@ extern "C++" {
     Pennant(int value);
     ~Pennant();
     Pennant* Pmerge(Pennant* y);
-    Pennant* Pmerge_FA(Pennant* x, Pennant* & y); 
+    Pennant* Pmerge_FA(Pennant* x, Pennant* & y);
     Pennant* Psplit();
     void remove_all(Node* node);
-	
+
     //private:
     Node* root;
 

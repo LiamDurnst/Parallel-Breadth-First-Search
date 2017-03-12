@@ -11,7 +11,7 @@
 #include "Pennant.h"
 
 extern "C++" {
-  
+
   Pennant::Pennant()
   {
     this->root = NULL;
@@ -24,9 +24,9 @@ extern "C++" {
 
   Pennant::~Pennant()
   {
-    
+
   }
-  
+
   Pennant* Pennant::Pmerge(Pennant* y)
   {
     if (this->root == NULL){
@@ -40,45 +40,45 @@ extern "C++" {
 
     return y;
   }
-  
-  //Pmerge_FA: Pennant Merge Full Adder. Concept: Pointers 'this' and 'x' are 
-  //two bits being added together, 'y' is carry bit. 
+
+  //Pmerge_FA: Pennant Merge Full Adder. Concept: Pointers 'this' and 'x' are
+  //two bits being added together, 'y' is carry bit.
   Pennant* Pennant::Pmerge_FA(Pennant* x, Pennant* & y)
   {
-    if (x== NULL && y == NULL && this->root == NULL)
+    if (x== NULL && y == NULL && this->root == NULL) // 000
       return NULL;
-    else if (x == NULL && y == NULL)
+    else if (x == NULL && y == NULL)                 // 100
       return this;
-    else if (this->root == NULL && x == NULL)
+    else if (this->root == NULL && x == NULL)        // 001
       return y;
-    else if (this->root == NULL && y == NULL)
+    else if (this->root == NULL && y == NULL)        // 010
       return x;
-    else if (x == NULL){
+    else if (x == NULL){                             // 101
 
       y = y->Pmerge(this);
       return NULL;
     }
-    else if (this->root == NULL){
+    else if (this->root == NULL){                    // 011
 
       y = y->Pmerge(x);
       return NULL;
     }
-    else if (y == NULL){
+    else if (y == NULL){                             // 110
 
       y = this->Pmerge(x);
       return NULL;
     }
-    else{
+    else{                                            // 
 
       y = y->Pmerge(x);
       return this;
     }
-    
+
     //Should never reach here
     return NULL;
   }
 
-  //Splits pennant. 
+  //Splits pennant.
   //Returns Pennant* containing other half of pennant
   Pennant* Pennant::Psplit()
   {
@@ -91,7 +91,7 @@ extern "C++" {
     }
     return NULL;
   }
-  
+
   void Pennant::remove_all(Node* node)
   {
     if (node->left != NULL)

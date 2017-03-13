@@ -89,7 +89,7 @@ void print_CSR_graph (graph *G) {
 }
 
 
-void process_layer() {
+void process_layer(Bag* &in_bag, Bag_Reducer* &out_bag, int thislevel) {
   // if BAG_SIZE(in_bag) < GRAINSIZE
   //   for each u in in_bag
   //     parallel for each v in Adj[u]
@@ -101,6 +101,16 @@ void process_layer() {
   // spawn PROCESS_LAYER(new_bag, out_bag, d)
   // PROCESS_LAYER(in_bag, out_bag, d)
   // sync
+
+  if (in_bag->backbone_size < 128) {
+    cilk_for(int u = 0; u < in_bag->backbone_size; u++) {
+
+    }
+  }
+  Bag* new_bag = in_bag->bag_split();
+  cilk_spawn process_layer(new_bag, out_bag, thislevel);
+  process_layer(in_bag, out_bag, thislevel);
+  cilk_sync;
 }
 
 
@@ -115,6 +125,17 @@ void pbfs(int s, graph *G, int **levelp, int *nlevelsp, int **levelsizep, int **
   //   V_d+1 = new reducer BAG_CREATE()
   //   PROCESS_LAYER(revert V_d, V_d+1, d)
   //   d = d+1
+
+  int *level, *levelsize, *parent;
+  int thislevel;
+  level = *levelp = (int *) calloc(G->nv, sizeof(int));
+  levelsize = *levelsizep = (int *) calloc(G->nv, sizeof(int));
+  parent = *parentp = (int *) calloc(G->nv, sizeof(int));
+
+  cilk_for(int v = 0; v < G->nv; v++) {
+    level[v] = -1;
+  }
+
 }
 
 

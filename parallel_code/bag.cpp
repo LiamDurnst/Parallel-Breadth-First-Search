@@ -14,7 +14,7 @@ void Bag::bag_insert(int vertex){
   Pennant* newPennant = new Pennant(vertex);
   int iter = 0;
   while (this->backbone[iter]!= NULL) {
-    newPennant = this->backbone[iter]->pennant_union(newPennant);
+    newPennant = pennant_union(this->backbone[iter],newPennant);
     this->backbone[iter++] = NULL;
   }
   this->backbone[iter] = newPennant;
@@ -38,6 +38,7 @@ Bag* Bag::bag_split(){
       this->backbone[i] = NULL;
     }
   }
-  if(y->root != NULL)
-    this->bag_insert(y);
+  if(y != NULL)
+    this->bag_insert(y->root->vertex);
+  return s2;
 }

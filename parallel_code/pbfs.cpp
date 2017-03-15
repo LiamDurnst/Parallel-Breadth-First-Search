@@ -128,12 +128,23 @@ void pbfs(int s, graph *G, int **levelp, int *nlevelsp, int **levelsizep, int **
 
   int *level, *levelsize, *parent;
   int thislevel;
+
   level = *levelp = (int *) calloc(G->nv, sizeof(int));
   levelsize = *levelsizep = (int *) calloc(G->nv, sizeof(int));
   parent = *parentp = (int *) calloc(G->nv, sizeof(int));
 
-  cilk_for(int v = 0; v < G->nv; v++) {
-    level[v] = -1;
+  for (v = 0; v < G->nv; v++) level[v] = -1;
+  for (v = 0; v < G->nv; v++) parent[v] = -1;
+
+  // assign the starting vertex level 0 and put it on the queue to explore
+  thislevel = 0;
+  level[s] = 0;
+  levelsize[0] = 1;
+  Bag* bag = new Bag();
+  bag->bag_insert(s);
+
+  while (!bag->is_empty()) {
+    // TODO
   }
 
 }

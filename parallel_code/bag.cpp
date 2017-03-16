@@ -35,6 +35,12 @@ bool Bag::is_empty(){
   return true;
 }
 
+void Bag::reset(){
+  for(int i=0; i<this->backbone_size; i++){
+    this->backbone[i] = NULL;
+  }
+}
+
 Bag* Bag::bag_split(){
   Bag* s2 = new Bag();
   Pennant* y = this->backbone[0];

@@ -166,7 +166,9 @@ void pbfs(int s, graph *G, int **levelp, int *nlevelsp, int **levelsizep, int **
   bag->bag_insert(s);
 
   while (!bag->is_empty()) {
-    // TODO
+    //TODO
+    Bag_reducer* out_bag = new Bag_reducer();
+    process_layer(G,bag,out_bag,thislevel,level,parent);
   }
 
 }

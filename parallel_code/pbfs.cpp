@@ -89,7 +89,7 @@ void print_CSR_graph (graph *G) {
 }
 
 
-void walk_bag(graph* G, Node* root,int thislevel, int* level, int* parent, Bag_reducer* &out_bag) {
+void walk_bag(graph* G, Node* root, Bag_reducer* &out_bag, int thislevel, int* level, int* parent) {
   if (root == NULL)
     return;
 
@@ -100,13 +100,13 @@ void walk_bag(graph* G, Node* root,int thislevel, int* level, int* parent, Bag_r
     int current_neighbor = G->nbr[u];
     if (level[current_neighbor] == -1) {
       parent[current_neighbor] = current_node;
-      level[current_neighbor] = thislevel + 1; // TODO use thislevel
+      level[current_neighbor] = thislevel + 1;
       out_bag->bag_insert(current_neighbor);
     }
   }
 
-  walk_bag(G, root->left,thislevel, level, parent, out_bag); // cilk_spawn
-  walk_bag(G, root->right,thislevel, level, parent, out_bag);
+  walk_bag(G, root->left, out_bag, thislevel, level, parent); // cilk_spawn
+  walk_bag(G, root->right, out_bag, thislevel, level, parent);
 }
 
 
@@ -125,13 +125,13 @@ void process_layer(graph* G, Bag* &in_bag, Bag_Reducer* &out_bag,int thislevel, 
 
   if (in_bag->backbone_size < 128) {
     cilk_for(int i = 0; i < in_bag->backbone_size; i++) {
-      walk_bag(G, in_bag->backbone[i]->root,thislevel, level, parent, out_bag);
+      walk_bag(G, in_bag->backbone[i]->root, out_bag, thislevel, level, parent);
     }
     return;
   }
   Bag* new_bag = in_bag->bag_split();
-  cilk_spawn process_layer(G,new_bag, out_bag, thislevel,level, parent);
-  process_layer(G, in_bag, out_bag,thislevel, level,parent);
+  cilk_spawn process_layer(G,new_bag, out_bag, thislevel, level, parent);
+  process_layer(G, in_bag, out_bag, thislevel, level,parent);
   cilk_sync;
 }
 
@@ -166,13 +166,14 @@ void pbfs(int s, graph *G, int **levelp, int *nlevelsp, int **levelsizep, int **
   bag->bag_insert(s);
 
   while (!bag->is_empty()) {
+    levelsize[thislevel] = bag->n_vertices();
     Bag_reducer* out_bag = new Bag_reducer();
     process_layer(G,bag,out_bag,thislevel,level,parent);
     thislevel++;
     //we want to reset our bag to be fresh in our next iteration of process layer
     bag->reset();
+    //copy nodes we got from previous process_layer iteration into our cleared bag
     for(int i=0; i<this->backbone_size; i++){
-      //copy nodes we got from previous process_layer iteration into our cleared bag
       if(out_bag->get_backbone(i)!=NULL)
         bag->backbone[i] = out_bag->get_backbone(i);
     }

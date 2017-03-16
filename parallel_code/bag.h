@@ -9,6 +9,7 @@ class Bag {
 
   void bag_insert(int vertex);
   void bag_union(Bag* bag);
+  bool is_empty();
   Bag* bag_split();
 
   int backbone_size;

@@ -2,6 +2,7 @@
 #define BAG_H
 
 #include "pennant.h"
+#include <math.h>
 #include <cilk.h>
 
 class Bag {
@@ -11,6 +12,7 @@ class Bag {
   void bag_union(Bag* bag);
   void reset();
   bool is_empty();
+  int n_vertices();
   Bag* bag_split();
 
   int backbone_size;

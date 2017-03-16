@@ -41,6 +41,15 @@ void Bag::reset(){
   }
 }
 
+int Bag::n_vertices(){
+  int result = 0;
+  for(int i=0; i<this->backbone_size; i++){
+    if(this->backbone[i]!=NULL)
+      result += pow(2,i);
+  }
+  return result;
+}
+
 Bag* Bag::bag_split(){
   Bag* s2 = new Bag();
   Pennant* y = this->backbone[0];

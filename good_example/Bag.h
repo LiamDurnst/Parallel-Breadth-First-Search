@@ -19,7 +19,7 @@
 #include <math.h>
 
 extern "C++"{
- 
+
 class Bag{
 
  public:
@@ -61,7 +61,7 @@ class Bag_reducer{
       left->merge(right);
     }
   };
-  
+
   Bag_reducer() : imp_() {}
   int get_forest_size()
   {
@@ -107,7 +107,7 @@ class Bag_reducer{
   {
     return imp_.view().write_array();
   }
-  
+
 
  private:
   cilk::reducer<Monoid> imp_;

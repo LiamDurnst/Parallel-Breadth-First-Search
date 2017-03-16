@@ -100,7 +100,7 @@ void walk_bag(graph* G, Node* root, int* level, int* parent, Bag_reducer* &out_b
     int current_neighbor = G->nbr[u];
     if (level[current_neighbor] == -1) {
       parent[current_neighbor] = current_node;
-      level[current_neighbor] = level[current_node] + 1;
+      level[current_neighbor] = level[current_node] + 1; // TODO use thislevel
       out_bag->bag_insert(current_neighbor);
     }
   }

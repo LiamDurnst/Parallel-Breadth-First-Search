@@ -89,7 +89,28 @@ void print_CSR_graph (graph *G) {
 }
 
 
-void process_layer(Bag* &in_bag, Bag_Reducer* &out_bag, int thislevel) {
+void walk_bag(graph* G, Node* root, int* level, int* parent, Bag_reducer* &out_bag) {
+  if (root == NULL)
+    return;
+
+  int current_node = root->vertex;
+  int end = G->firstnbr[current_node + 1];
+
+  for (int u = G->firstnbf[current_node]; u < end; u++) { // cilk_for
+    int current_neighbor = G->nbr[u];
+    if (level[current_neighbor] == -1) {
+      parent[current_neighbor] = current_node;
+      level[current_neighbor] = level[current_node] + 1;
+      out_bag->bag_insert(current_neighbor);
+    }
+  }
+
+  walk_bag(G, root->left, level, parent, out_bag); // cilk_spawn
+  walk_bag(G, root->right, level, parent, out_bag);
+}
+
+
+void process_layer(graph* G, Bag* &in_bag, Bag_Reducer* &out_bag, int* level, int* parent) {
   // if BAG_SIZE(in_bag) < GRAINSIZE
   //   for each u in in_bag
   //     parallel for each v in Adj[u]
@@ -103,9 +124,10 @@ void process_layer(Bag* &in_bag, Bag_Reducer* &out_bag, int thislevel) {
   // sync
 
   if (in_bag->backbone_size < 128) {
-    cilk_for(int u = 0; u < in_bag->backbone_size; u++) {
-
+    cilk_for(int i = 0; i < in_bag->backbone_size; i++) {
+      walk_bag(G, in_bag->backbone[i]->root, level, parent, out_bag);
     }
+    return;
   }
   Bag* new_bag = in_bag->bag_split();
   cilk_spawn process_layer(new_bag, out_bag, thislevel);

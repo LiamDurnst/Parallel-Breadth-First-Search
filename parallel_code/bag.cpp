@@ -27,6 +27,14 @@ void Bag::bag_union(Bag* bag){
   }
 }
 
+bool Bag::is_empty(){
+  for(int i=0; i<this->backbone_size; i++){
+    if(this->backbone[i]!=NULL)
+      return false;
+  }
+  return true;
+}
+
 Bag* Bag::bag_split(){
   Bag* s2 = new Bag();
   Pennant* y = this->backbone[0];

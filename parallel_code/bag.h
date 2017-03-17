@@ -57,6 +57,10 @@ class Bag_reducer {
       return imp_.view().is_empty();
     }
 
+    int n_vertices() {
+      return imp_.view().n_vertices();
+    }
+
   private:
     cilk::reducer<Monoid> imp_;
 

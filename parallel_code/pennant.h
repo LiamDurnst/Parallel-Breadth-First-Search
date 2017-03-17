@@ -1,7 +1,7 @@
 #ifndef PENNANT_H
 #define PENNANT_H
 
-#include <cstddef>
+#include <stdio.h>
 
 struct Node {
   int vertex;

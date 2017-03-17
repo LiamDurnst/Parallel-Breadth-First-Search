@@ -2,6 +2,7 @@
 #define BAG_H
 
 #include "pennant.h"
+#include <stdio.h>
 #include <math.h>
 #include <cilk.h>
 

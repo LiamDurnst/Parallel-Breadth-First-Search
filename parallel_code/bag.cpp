@@ -57,7 +57,7 @@ int Bag::n_vertices(){
   return result;
 }
 
-//
+// split bag using arithmetic right shift
 Bag* Bag::bag_split(){
   Bag* s2 = new Bag();
   Pennant* y = this->backbone[0];

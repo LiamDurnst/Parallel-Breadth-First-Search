@@ -4,7 +4,7 @@
 
 /* Code provided by Prof. John Gilbert */
 
-#include "Bag.h"
+#include "bag.h"
 
 #include <stdio.h>
 #include <stdlib.h>

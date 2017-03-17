@@ -28,7 +28,7 @@ class Bag_reducer {
   public:
     struct Monoid: cilk::monoid_base<Bag > {
       static void reduce(Bag *left, Bag *right){
-        left->merge(right);
+        left->bag_union(right);
       }
     };
 

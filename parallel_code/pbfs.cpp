@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <iostream>
 #include <math.h>
 #include <sys/time.h>   // timer
 
@@ -159,8 +160,8 @@ void pbfs(int s, graph *G, int **levelp, int *nlevelsp, int **levelsizep, int **
   levelsize = *levelsizep = (int *) calloc(G->nv, sizeof(int));
   parent = *parentp = (int *) calloc(G->nv, sizeof(int));
 
-  for (v = 0; v < G->nv; v++) level[v] = -1;
-  for (v = 0; v < G->nv; v++) parent[v] = -1;
+  for (int v = 0; v < G->nv; v++) level[v] = -1;
+  for (int v = 0; v < G->nv; v++) parent[v] = -1;
 
   // assign the starting vertex level 0 and put it on the queue to explore
   thislevel = 0;
@@ -177,7 +178,7 @@ void pbfs(int s, graph *G, int **levelp, int *nlevelsp, int **levelsizep, int **
     //we want to reset our bag to be fresh in our next iteration of process layer
     bag->reset();
     //copy nodes we got from previous process_layer iteration into our cleared bag
-    for(int i=0; i<this->backbone_size; i++){
+    for(int i=0; i<bag->backbone_size; i++){
       if(out_bag->get_backbone(i)!=NULL)
         bag->backbone[i] = out_bag->get_backbone(i);
     }

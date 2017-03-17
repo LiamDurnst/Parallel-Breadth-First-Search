@@ -130,7 +130,9 @@ void process_layer(graph* G, Bag* &in_bag, Bag_reducer* &out_bag,int thislevel, 
 
   if (in_bag->n_vertices() < 128) {
     cilk_for(int i = 0; i < in_bag->backbone_size; i++) {
+      cout << "before walk_bag" << endl;
       walk_bag(G, in_bag->backbone[i]->root, out_bag, thislevel, level, parent);
+      cout << "after walk_bag" << endl;
     }
     return;
   }
@@ -177,7 +179,13 @@ void pbfs(int s, graph *G, int **levelp, int *nlevelsp, int **levelsizep, int **
   while (!bag->is_empty()) {
     levelsize[thislevel] = bag->n_vertices();
     Bag_reducer* out_bag = new Bag_reducer();
+
+    cout << "before process_layer" << endl;
+
     process_layer(G,bag,out_bag,thislevel,level,parent);
+
+    cout << "after process_layer" << endl;
+
     thislevel++;
     //we want to reset our bag to be fresh in our next iteration of process layer
     bag->reset();

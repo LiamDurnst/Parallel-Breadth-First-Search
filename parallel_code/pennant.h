@@ -1,6 +1,8 @@
 #ifndef PENNANT_H
 #define PENNANT_H
 
+#include <cstddef>
+
 struct Node {
   int vertex;
   Node* left;

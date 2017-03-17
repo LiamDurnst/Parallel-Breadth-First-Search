@@ -8,25 +8,25 @@ Pennant::Pennant(int vertex) {
   this->root = new Node(vertex);
 }
 
-static Pennant* Pennant::pennant_union(Pennant* x, Pennant* y) {
+Pennant* Pennant::pennant_union(Pennant* y) {
   // if x is empty return y
-  if (x->root == NULL) {
+  if (this->root == NULL) {
     return y;
   }
   // if y is empty return x
   else if (y->root == NULL) {
-    return x;
+    return this;
   }
 
   // if neither are empty
-  y->root->right = x->root->left;
-  x->root->left = y->root;
-  return x;
+  y->root->right = this->root->left;
+  this->root->left = y->root;
+  return this;
 }
 
 // full_adder is a helper function for bag union
-static Pennant* Pennant::full_adder(Pennant* x, Pennant* y, Pennant* &z) {
-  if (x->root == NULL) {
+Pennant* Pennant::full_adder(Pennant* y, Pennant* &z) {
+  if (this->root == NULL) {
     if (y->root == NULL) {
       if (z->root == NULL) { // 0 0 0
         return NULL;
@@ -37,25 +37,25 @@ static Pennant* Pennant::full_adder(Pennant* x, Pennant* y, Pennant* &z) {
       if (z->root == NULL) { // 0 1 0
         return y;
       } else {               // 0 1 1
-        z = pennant_union(y, z)
+        z->pennant_union(y);
         return NULL;
       }
     }
   } else {
     if (y->root == NULL) {
       if (z->root == NULL) { // 1 0 0
-        return x;
+        return this;
       } else {               // 1 0 1
-        z = pennant_union(x, z);
+        z->pennant_union(this);
         return NULL;
       }
     } else {
       if (z->root == NULL) { // 1 1 0
-        z = pennant_union(x, y);
+        z = this->pennant_union(y);
         return NULL;
       } else {               // 1 1 1
-        z = pennant_union(y, z);
-        return x;
+        z->pennant_union(y);
+        return this;
       }
     }
   }

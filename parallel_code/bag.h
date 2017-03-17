@@ -7,6 +7,8 @@
 #include <cilk/cilk.h>
 #include <cilk/reducer.h>
 
+extern "C++"{
+
 class Bag {
   public:
     Bag();
@@ -71,5 +73,6 @@ class Bag_reducer {
 
 };
 
+}
 
 #endif

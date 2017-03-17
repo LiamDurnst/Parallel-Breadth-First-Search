@@ -94,7 +94,7 @@ void print_CSR_graph (graph *G) {
 }
 
 
-void walk_bag(graph* G, Node* root, Bag_reducer* &out_bag, int thislevel, int* & level, int* & parent) {
+void walk_bag(graph* G, Node* root, Bag* &out_bag, int thislevel, int* & level, int* & parent) {
   if (root == NULL)
     return;
 
@@ -115,7 +115,7 @@ void walk_bag(graph* G, Node* root, Bag_reducer* &out_bag, int thislevel, int* &
 }
 
 
-void process_layer(graph* G, Bag* &in_bag, Bag_reducer* &out_bag,int thislevel, int* & level, int* & parent) {
+void process_layer(graph* G, Bag* &in_bag, Bag* &out_bag,int thislevel, int* & level, int* & parent) {
   // if BAG_SIZE(in_bag) < GRAINSIZE
   //   for each u in in_bag
   //     parallel for each v in Adj[u]
@@ -178,7 +178,7 @@ void pbfs(int s, graph *G, int **levelp, int *nlevelsp, int **levelsizep, int **
 
   while (!bag->is_empty()) {
     levelsize[thislevel] = bag->n_vertices();
-    Bag_reducer* out_bag = new Bag_reducer();
+    Bag* out_bag = new Bag();
 
     cout << "before process_layer" << endl;
 

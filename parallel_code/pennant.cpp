@@ -15,13 +15,13 @@ static Pennant* Pennant::pennant_union(Pennant* x, Pennant* y) {
   }
   // if y is empty return x
   else if (y->root == NULL) {
-    return this;
-  }
-  else {
-    y->root->right = x->root->left;
-    x->root->left = y->root;
     return x;
   }
+
+  // if neither are empty
+  y->root->right = x->root->left;
+  x->root->left = y->root;
+  return x;
 }
 
 // full_adder is a helper function for bag union
@@ -66,11 +66,10 @@ static Pennant* Pennant::full_adder(Pennant* x, Pennant* y, Pennant* &z) {
 Pennant* Pennant::pennant_split() {
   if (this->root != NULL && this->root->left != NULL) {
     Pennant* y = new Pennant();
-    y = this->root->left;
+    y->root = this->root->left;
     this->root->left = y->root->right;
     y->root->right = NULL;
     return y;
-  } else {
-    return NULL;
   }
+  return NULL;
 }

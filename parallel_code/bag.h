@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <cilk/cilk.h>
+#include <cilk/reducer.h>
 
 class Bag {
   public:

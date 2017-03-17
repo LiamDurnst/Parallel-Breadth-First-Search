@@ -93,7 +93,7 @@ void print_CSR_graph (graph *G) {
 }
 
 
-void walk_bag(graph* G, Node* root, Bag_reducer* &out_bag, int thislevel, int* level, int* parent) {
+void walk_bag(graph* G, Node* root, Bag_reducer* &out_bag, int thislevel, int* & level, int* & parent) {
   if (root == NULL)
     return;
 
@@ -114,7 +114,7 @@ void walk_bag(graph* G, Node* root, Bag_reducer* &out_bag, int thislevel, int* l
 }
 
 
-void process_layer(graph* G, Bag* &in_bag, Bag_Reducer* &out_bag,int thislevel, int* level, int* parent) {
+void process_layer(graph* G, Bag* &in_bag, Bag_Reducer* &out_bag,int thislevel, int* & level, int* & parent) {
   // if BAG_SIZE(in_bag) < GRAINSIZE
   //   for each u in in_bag
   //     parallel for each v in Adj[u]

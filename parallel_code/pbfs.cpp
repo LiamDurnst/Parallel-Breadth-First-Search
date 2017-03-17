@@ -163,12 +163,16 @@ void pbfs(int s, graph *G, int **levelp, int *nlevelsp, int **levelsizep, int **
   for (int v = 0; v < G->nv; v++) level[v] = -1;
   for (int v = 0; v < G->nv; v++) parent[v] = -1;
 
+  cout << "after init level and parent" << endl;
+
   // assign the starting vertex level 0 and put it on the queue to explore
   thislevel = 0;
   level[s] = 0;
   levelsize[0] = 1;
   Bag* bag = new Bag();
   bag->bag_insert(s);
+
+  cout << "after init bag" << endl;
 
   while (!bag->is_empty()) {
     levelsize[thislevel] = bag->n_vertices();

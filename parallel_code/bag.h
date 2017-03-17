@@ -7,17 +7,20 @@
 #include <cilk/cilk.h>
 
 class Bag {
-  Bag();
+  public:
+    Bag();
+    void bag_insert(int vertex);
+    void bag_union(Bag* bag);
+    void reset();
+    bool is_empty();
+    int n_vertices();
+    Bag* bag_split();
 
-  void bag_insert(int vertex);
-  void bag_union(Bag* bag);
-  void reset();
-  bool is_empty();
-  int n_vertices();
-  Bag* bag_split();
+    friend class Bag_reducer;
+    friend class cilk::monoid_base<Bag >;
 
-  int backbone_size;
-  Pennant** backbone;
+    int backbone_size;
+    Pennant** backbone;
 };
 
 class Bag_reducer {

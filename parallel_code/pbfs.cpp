@@ -100,7 +100,7 @@ void walk_bag(graph* G, Node* root, Bag_reducer* &out_bag, int thislevel, int* &
   int current_node = root->vertex;
   int end = G->firstnbr[current_node + 1];
 
-  for (int u = G->firstnbf[current_node]; u < end; u++) { // cilk_for
+  for (int u = G->firstnbr[current_node]; u < end; u++) { // cilk_for
     int current_neighbor = G->nbr[u];
     if (level[current_neighbor] == -1) {
       parent[current_neighbor] = current_node;
@@ -127,7 +127,7 @@ void process_layer(graph* G, Bag* &in_bag, Bag_Reducer* &out_bag,int thislevel, 
   // PROCESS_LAYER(in_bag, out_bag, d)
   // sync
 
-  if (in_bag->backbone_size < 128) {
+  if (in_bag->n_vertices() < 128) {
     cilk_for(int i = 0; i < in_bag->backbone_size; i++) {
       walk_bag(G, in_bag->backbone[i]->root, out_bag, thislevel, level, parent);
     }

@@ -22,14 +22,15 @@ struct Node {
 };
 
 class Pennant {
-  Pennant();
-  Pennant(int vertex);
+  public:
+    Pennant();
+    Pennant(int vertex);
 
-  static Pennant* pennant_union(Pennant* x, Pennant* y);
-  static Pennant* full_adder(Pennant* x, Pennant* y, Pennant* &z);
-  Pennant* pennant_split();
+    static Pennant* pennant_union(Pennant* x, Pennant* y);
+    static Pennant* full_adder(Pennant* x, Pennant* y, Pennant* &z);
+    Pennant* pennant_split();
 
-  Node* root;
+    Node* root;
 };
 
 #endif

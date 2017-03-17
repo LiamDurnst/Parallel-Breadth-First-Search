@@ -19,7 +19,7 @@ struct Node {
     left = NULL;
     right = NULL;
   }
-}
+};
 
 class Pennant {
   Pennant();

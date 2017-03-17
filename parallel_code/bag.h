@@ -65,7 +65,7 @@ class Bag_reducer {
   private:
     cilk::reducer<Monoid> imp_;
 
-  };
-}
+};
+
 
 #endif

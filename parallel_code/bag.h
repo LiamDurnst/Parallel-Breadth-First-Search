@@ -4,7 +4,7 @@
 #include "pennant.h"
 #include <stdio.h>
 #include <math.h>
-#include <cilk.h>
+#include <cilk/cilk.h>
 
 class Bag {
   Bag();

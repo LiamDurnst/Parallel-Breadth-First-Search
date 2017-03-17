@@ -4,7 +4,7 @@
 // default constructor for bag
 Bag::Bag(){
   this->backbone_size = 20;
-  this->backbone = new Pennant** [this->backbone_size];
+  this->backbone = new Pennant* [this->backbone_size];
   //set our backbone indices to NULL
   for(int i=0; i<this->backbone_size; ++i){
     this->backbone[i] = NULL;
@@ -17,7 +17,7 @@ void Bag::bag_insert(int vertex){
   int iter = 0;
   // search for first open index
   while (this->backbone[iter] != NULL) {
-    newPennant = pennant_union(this->backbone[iter], newPennant);
+    newPennant = this->backbone[iter]->pennant_union(newPennant);
     this->backbone[iter++] = NULL;
   }
   this->backbone[iter] = newPennant;
@@ -27,7 +27,7 @@ void Bag::bag_insert(int vertex){
 void Bag::bag_union(Bag* bag){
   Pennant* y = NULL;                // "carry" bit
   for(int i=0; i<this->backbone_size; i++) {
-    this->backbone[i] = full_adder(bag->backbone[i], y);
+    this->backbone[i] = bag->backbone[i]->full_adder(y);
   }
 }
 

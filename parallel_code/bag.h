@@ -72,6 +72,5 @@ class Bag_reducer {
 
 };
 
-#include "bag.cpp"
 
 #endif

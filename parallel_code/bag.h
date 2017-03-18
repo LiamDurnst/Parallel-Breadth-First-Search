@@ -16,7 +16,9 @@ class Bag {
     void reset();
     bool is_empty();
     int n_vertices();
+    int* write_array();
     Bag* bag_split();
+
 
     friend class Bag_reducer;
     friend class cilk::monoid_base<Bag >;

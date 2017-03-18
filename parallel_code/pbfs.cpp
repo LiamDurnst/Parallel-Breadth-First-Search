@@ -150,14 +150,38 @@ void process_layer(graph* G, Bag* &in_bag, Bag_reducer* &out_bag,int thislevel, 
   // spawn PROCESS_LAYER(new_bag, out_bag, d)
   // PROCESS_LAYER(in_bag, out_bag, d)
   // sync
+  if(in_bag->size() < 200)
+  {
+    int *bag_array = in_bag->write_array();
+    int size = in_bag->n_vertices();
+    cilk_for(int i = 0; i < size; i++)
+    {
 
-  if (in_bag->n_vertices() < 128) {
-    cilk_for(int i = 0; i < in_bag->backbone_size; i++) { // CILK HERE
-      if(in_bag->backbone[i]!=NULL)
-        walk_bag(G, in_bag->backbone[i]->root, out_bag, thislevel, level, parent);
+      int current_node = bag_array[i];
+      int end = G->firstnbr[current_node+1];
+      for(int j = G->firstnbr[current_node]; j < end; j++)
+      {
+	int current_neighbor = G->nbr[j];
+	if(level[current_neighbor] == -1)
+	{
+	  parent[current_neighbor] = current_node;
+	  level[current_neighbor] = thislevel+1;
+	  out_bag->bag_insert(current_neighbor);
+
+	}
+      }
     }
+    delete [] bag_array;
     return;
   }
+
+  // if (in_bag->n_vertices() < 128) {
+  //   cilk_for(int i = 0; i < in_bag->backbone_size; i++) { // CILK HERE
+  //     if(in_bag->backbone[i]!=NULL)
+  //       walk_bag(G, in_bag->backbone[i]->root, out_bag, thislevel, level, parent);
+  //   }
+  //   return;
+  // }
   Bag* new_bag = in_bag->bag_split();
   cilk_spawn process_layer(G, new_bag, out_bag, thislevel, level, parent); //CILK HERE
   process_layer(G, in_bag, out_bag, thislevel, level,parent);

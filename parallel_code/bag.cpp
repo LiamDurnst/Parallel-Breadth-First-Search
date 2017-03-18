@@ -88,3 +88,16 @@ Bag* Bag::bag_split(){
   }
   return s2;
 }
+
+int* Bag::write_array()
+{
+  int size = this->size();
+  int* array = new int [size];
+  int count = 0;
+  for(int i = 0; i < this->forest_size; i++){
+    if(this->forest[i] != NULL)
+      recursive_write_array(array, this->forest[i]->root, count);
+  }
+
+  return array;
+}

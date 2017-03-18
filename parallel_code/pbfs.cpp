@@ -54,8 +54,8 @@ graph * graph_from_edge_list (int *tail, int* head, int nedges) {
 
   // count vertices
   cilk_for (e = 0; e < G->ne; e++) {
-    max_tail->calc_max(tail[e]);
-    max_head->calc_max(head[e]);
+    if (tail[e] > maxv)max_tail->calc_max(tail[e]);
+    if (head[e] > maxv)max_head->calc_max(head[e]);
     // if (tail[e] > maxv) maxv = tail[e];
     // if (head[e] > maxv) maxv = head[e];
   }

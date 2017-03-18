@@ -101,7 +101,7 @@ void walk_bag(graph* G, Node* root, Bag_reducer* &out_bag, int thislevel, int* &
   int current_node = root->vertex;
   int end = G->firstnbr[current_node + 1];
   // cout << "Current node: " << current_node << endl;
-  cilk_for (int u = G->firstnbr[current_node]; u < end; u++) { // cilk_for
+  for (int u = G->firstnbr[current_node]; u < end; u++) { // cilk_for
     int current_neighbor = G->nbr[u];
     // cout<< "current_neighbor: " << current_neighbor << endl;
     if (level[current_neighbor] == -1) {

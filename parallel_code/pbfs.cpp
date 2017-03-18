@@ -167,7 +167,7 @@ void pbfs(int s, graph *G, int **levelp, int *nlevelsp, int **levelsizep, int **
   for (int v = 0; v < G->nv; v++) level[v] = -1;
   for (int v = 0; v < G->nv; v++) parent[v] = -1;
 
-  cout << "after init level and parent" << endl;
+  //cout << "after init level and parent" << endl;
 
   // assign the starting vertex level 0 and put it on the queue to explore
   thislevel = 0;
@@ -176,17 +176,17 @@ void pbfs(int s, graph *G, int **levelp, int *nlevelsp, int **levelsizep, int **
   Bag* bag = new Bag();
   bag->bag_insert(s);
 
-  cout << "after init bag" << endl;
+  //cout << "after init bag" << endl;
 
   while (!bag->is_empty()) {
     levelsize[thislevel] = bag->n_vertices();
     Bag_reducer* out_bag = new Bag_reducer();
 
-    cout << "before process_layer" << endl;
+    // cout << "before process_layer" << endl;
 
     process_layer(G,bag,out_bag,thislevel,level,parent);
 
-    cout << "after process_layer" << endl;
+    // cout << "after process_layer" << endl;
 
     thislevel++;
     //we want to reset our bag to be fresh in our next iteration of process layer

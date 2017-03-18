@@ -1,5 +1,5 @@
 // BFSTEST : Test breadth-first search in a graph.
-// 
+//
 // example: cat sample.txt | ./bfstest 1
 //
 // John R. Gilbert, 17 Feb 2011
@@ -90,7 +90,7 @@ void print_CSR_graph (graph *G) {
 }
 
 
-void bfs (int s, graph *G, int **levelp, int *nlevelsp, 
+void bfs (int s, graph *G, int **levelp, int *nlevelsp,
          int **levelsizep, int **parentp) {
   int *level, *levelsize, *parent;
   int thislevel;
@@ -158,7 +158,21 @@ int main (int argc, char* argv[]) {
   print_CSR_graph (G);
 
   printf("Starting vertex for BFS is %d.\n\n",startvtx);
-  bfs (startvtx, G, &level, &nlevels, &levelsize, &parent);
+
+
+  struct timeval tv1, tv2;
+  double duration;
+
+  gettimeofday(&tv1, NULL);
+  bfs(startvtx, G, &level, &nlevels, &levelsize, &parent);
+  gettimeofday(&tv2, NULL);
+
+  double start, end;
+  start = (double)tv1.tv_sec + (double)tv1.tv_usec/1000000.0;
+  end = (double)tv2.tv_sec + (double)tv2.tv_usec/1000000.0;
+
+  duration = end - start;
+
 
   reached = 0;
   for (i = 0; i < nlevels; i++) reached += levelsize[i];
@@ -170,8 +184,7 @@ int main (int argc, char* argv[]) {
     for (v = 0; v < G->nv; v++) printf("%6d%7d%7d\n", v, parent[v], level[v]);
   }
   printf("\n");
+
+
+  cout << "Time in seconds: " << duration << " seconds" << endl;
 }
-
-
-
-

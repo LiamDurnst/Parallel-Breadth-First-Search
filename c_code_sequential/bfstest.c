@@ -186,5 +186,5 @@ int main (int argc, char* argv[]) {
   printf("\n");
 
 
-  cout << "Time in seconds: " << duration << " seconds" << endl;
+  printf("Time in seconds: %f seconds \n", duration);
 }

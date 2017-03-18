@@ -11,6 +11,7 @@
 #include <iostream>
 #include <math.h>
 #include <sys/time.h>   // timer
+#include <algorithm>
 
 using namespace std;
 
@@ -39,6 +40,19 @@ int read_edge_list (int **tailp, int **headp) {
     nr = scanf("%i %i",&t,&h);
   }
   return nedges;
+}
+
+void sortEdges(int *begin, int* end)
+{
+  if(begin != end)
+  {
+    --end;
+    int *middle = std::partition(begin, end, std::bind2nd(std::less<int>(), *end));
+    std::swap(*end, *middle);
+    cilk_spawn sortEdges(begin, middle);
+    sortEdges(++middle, ++end);
+    cilk_sync;
+  }
 }
 
 
@@ -72,6 +86,15 @@ graph * graph_from_edge_list (int *tail, int* head, int nedges) {
   // the loop above shifted firstnbr[] left; shift it back right
   for (v = G->nv; v > 0; v--) G->firstnbr[v] = G->firstnbr[v-1];
   G->firstnbr[0] = 0;
+
+  for(v = 0; v < G->nv - 1; v++){
+     int begin = G->firstnbr[v];
+     int end = G->firstnbr[v+1]-1 < begin ? begin : G->firstnbr[v+1]-1;
+     //printf("sorting from %d to %d\n", begin, end);
+     cilk_spawn sortEdges(G->nbr + begin, G->nbr + end);
+  }
+  cilk_sync;
+
   return G;
 }
 

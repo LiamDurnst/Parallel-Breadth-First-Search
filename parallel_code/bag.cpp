@@ -27,7 +27,8 @@ void Bag::bag_insert(int vertex){
 void Bag::bag_union(Bag* bag){
   Pennant* y = NULL;                // "carry" bit
   for(int i=0; i<this->backbone_size; i++) {
-    this->backbone[i]->full_adder(bag->backbone[i], y);
+    if(this->backbone[i]!=NULL)
+      this->backbone[i]->full_adder(bag->backbone[i], y);
   }
 }
 

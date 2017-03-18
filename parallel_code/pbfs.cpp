@@ -101,7 +101,7 @@ void walk_bag(graph* G, Node* root, Bag_reducer* &out_bag, int thislevel, int* &
   int current_node = root->vertex;
   int end = G->firstnbr[current_node + 1];
   // cout << "Current node: " << current_node << endl;
-  cilk_for (int u = G->firstnbr[current_node]; u < end; u++) { // cilk_for
+  for(int u = G->firstnbr[current_node]; u < end; u++) { // cilk_for
     int current_neighbor = G->nbr[u];
     // cout<< "current_neighbor: " << current_neighbor << endl;
     if (level[current_neighbor] == -1) {
@@ -166,8 +166,10 @@ void pbfs(int s, graph *G, int **levelp, int *nlevelsp, int **levelsizep, int **
   levelsize = *levelsizep = (int *) calloc(G->nv, sizeof(int));
   parent = *parentp = (int *) calloc(G->nv, sizeof(int));
 
-  for (int v = 0; v < G->nv; v++) level[v] = -1;
-  for (int v = 0; v < G->nv; v++) parent[v] = -1;
+  cilk_for (int v = 0; v < G->nv; v++){
+    level[v] = -1;parent[v] = -1;
+  }
+//  cilk_for (int v = 0; v < G->nv; v++) parent[v] = -1;
 
   //cout << "after init level and parent" << endl;
 

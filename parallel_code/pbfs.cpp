@@ -138,7 +138,7 @@ void process_layer(graph* G, Bag* &in_bag, Bag_reducer* &out_bag,int thislevel, 
   Bag* new_bag = in_bag->bag_split();
   cilk_spawn process_layer(G,new_bag, out_bag, thislevel, level, parent); //CILK HERE
   process_layer(G, in_bag, out_bag, thislevel, level,parent);
-  cilk_sync; //CILK HERE
+  // cilk_sync; //CILK HERE
 }
 
 

@@ -28,7 +28,7 @@ Pennant* Pennant::pennant_union(Pennant* y) {
 }
 
 // full_adder is a helper function for bag union
-Pennant* Pennant::full_adder(Pennant* x, Pennant* &y) {
+Pennant* Pennant::full_adder(Pennant* y, Pennant* &z) {
   // if (x== NULL && y == NULL && this->root == NULL) // 000
   //   return NULL;
   // else if (x == NULL && y == NULL)                 // 100

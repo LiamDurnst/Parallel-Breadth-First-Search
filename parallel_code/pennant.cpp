@@ -63,33 +63,33 @@ Pennant* Pennant::full_adder(Pennant* y, Pennant* &z) {
 
 
   if (this->root == NULL) {
-    if (y!=NULL && y->root == NULL) {
-      if (z!=NULL && z->root == NULL) { // 0 0 0
+    if (y == NULL) {
+      if (z == NULL) {                  // 0 0 0
         return NULL;
       } else {
-        return z;            // 0 0 1
+        return z;                       // 0 0 1
       }
     } else {
-      if (z!=NULL && z->root == NULL) { // 0 1 0
+      if (z == NULL) {                  // 0 1 0
         return y;
-      } else {               // 0 1 1
+      } else {                          // 0 1 1
         z->pennant_union(y);
         return NULL;
       }
     }
   } else {
-    if (y!=NULL && y->root == NULL) {
-      if (z!=NULL && z->root == NULL) { // 1 0 0
+    if (y == NULL) {
+      if (z == NULL) {                  // 1 0 0
         return this;
-      } else {               // 1 0 1
+      } else {                          // 1 0 1
         z->pennant_union(this);
         return NULL;
       }
     } else {
-      if (z!=NULL && z->root == NULL) { // 1 1 0
+      if (z == NULL) {                  // 1 1 0
         z = this->pennant_union(y);
         return NULL;
-      } else {               // 1 1 1
+      } else {                          // 1 1 1
         z->pennant_union(y);
         return this;
       }

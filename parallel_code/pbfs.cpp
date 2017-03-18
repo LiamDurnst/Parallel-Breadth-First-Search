@@ -11,8 +11,6 @@
 #include <iostream>
 #include <math.h>
 #include <sys/time.h>   // timer
-#include <cilk/reducer_max.h>
-
 
 using namespace std;
 
@@ -47,22 +45,14 @@ int read_edge_list (int **tailp, int **headp) {
 graph * graph_from_edge_list (int *tail, int* head, int nedges) {
   graph *G;
   int i, e, v, maxv;
-  cilk::reducer< cilk::op_max<char> > max_tail, max_head;
   G = (graph *) calloc(1, sizeof(graph));
   G->ne = nedges;
   maxv = 0;
 
   // count vertices
-  cilk_for (e = 0; e < G->ne; e++) {
-    if (tail[e] > maxv)max_tail->calc_max(tail[e]);
-    if (head[e] > maxv)max_head->calc_max(head[e]);
-    // if (tail[e] > maxv) maxv = tail[e];
-    // if (head[e] > maxv) maxv = head[e];
-  }
-  if (max_tail.get_value() > max_head.get_value()) {
-    maxv = max_tail.get_value();
-  } else {
-    maxv = max_head.get_value();
+  for (e = 0; e < G->ne; e++) {
+    if (tail[e] > maxv) maxv = tail[e];
+    if (head[e] > maxv) maxv = head[e];
   }
   G->nv = maxv+1;
   G->nbr = (int *) calloc(G->ne, sizeof(int));

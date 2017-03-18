@@ -150,7 +150,7 @@ void process_layer(graph* G, Bag* &in_bag, Bag_reducer* &out_bag,int thislevel, 
   // spawn PROCESS_LAYER(new_bag, out_bag, d)
   // PROCESS_LAYER(in_bag, out_bag, d)
   // sync
-  if(in_bag->size() < 200)
+  if(in_bag->n_vertices() < 200)
   {
     int *bag_array = in_bag->write_array();
     int size = in_bag->n_vertices();

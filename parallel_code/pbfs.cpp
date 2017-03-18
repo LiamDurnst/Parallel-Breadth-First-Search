@@ -50,7 +50,7 @@ graph * graph_from_edge_list (int *tail, int* head, int nedges) {
   maxv = 0;
 
   // count vertices
-  for (e = 0; e < G->ne; e++) {
+  cilk_for (e = 0; e < G->ne; e++) {
     if (tail[e] > maxv) maxv = tail[e];
     if (head[e] > maxv) maxv = head[e];
   }

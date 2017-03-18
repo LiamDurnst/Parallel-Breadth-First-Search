@@ -158,8 +158,8 @@ void process_layer(graph* G, Bag* &in_bag, Bag_reducer* &out_bag,int thislevel, 
     }
     return;
   }
-
-  cilk_spawn process_layer(G, in_bag->bag_split(), out_bag, thislevel, level, parent); //CILK HERE
+  Bag* new_bag = in_bag->bag_split();
+  cilk_spawn process_layer(G, new_bag, out_bag, thislevel, level, parent); //CILK HERE
   process_layer(G, in_bag, out_bag, thislevel, level,parent);
   cilk_sync; //CILK HERE
 }
@@ -195,8 +195,8 @@ void pbfs(int s, graph *G, int **levelp, int *nlevelsp, int **levelsizep, int **
   Bag* bag = new Bag();
   bag->bag_insert(s);
   while (!bag->is_empty()) {
-    Bag_reducer* out_bag = new Bag_reducer();
     levelsize[thislevel] = bag->n_vertices();
+    Bag_reducer* out_bag = new Bag_reducer();
     process_layer(G,bag,out_bag,thislevel,level,parent);
     thislevel++;
     //we want to reset our bag to be fresh in our next iteration of process layer

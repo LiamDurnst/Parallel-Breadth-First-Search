@@ -106,7 +106,7 @@ void Bag::recursive_write_array(int* & array, Node* node, int &count)
 {
   if (node->left != NULL)
     recursive_write_array(array, node->left, count);
-  array[count++] = node->item;
+  array[count++] = node->vertex;
   if (node->right != NULL)
     recursive_write_array(array, node->right, count);
 }

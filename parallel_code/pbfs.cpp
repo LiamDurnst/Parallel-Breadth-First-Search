@@ -50,7 +50,7 @@ graph * graph_from_edge_list (int *tail, int* head, int nedges) {
   maxv = 0;
 
   // count vertices
-  cilk_for (e = 0; e < G->ne; e++) {
+  for (e = 0; e < G->ne; e++) {
     if (tail[e] > maxv) maxv = tail[e];
     if (head[e] > maxv) maxv = head[e];
   }
@@ -59,18 +59,18 @@ graph * graph_from_edge_list (int *tail, int* head, int nedges) {
   G->firstnbr = (int *) calloc(G->nv+1, sizeof(int));
 
   // count neighbors of vertex v in firstnbr[v+1],
-  cilk_for (e = 0; e < G->ne; e++) G->firstnbr[tail[e]+1]++;
+  for (e = 0; e < G->ne; e++) G->firstnbr[tail[e]+1]++;
 
   // cumulative sum of neighbors gives firstnbr[] values
-  cilk_for (v = 0; v < G->nv; v++) G->firstnbr[v+1] += G->firstnbr[v];
+  for (v = 0; v < G->nv; v++) G->firstnbr[v+1] += G->firstnbr[v];
 
   // pass through edges, slotting each one into the CSR structure
-  cilk_for (e = 0; e < G->ne; e++) {
+  for (e = 0; e < G->ne; e++) {
     i = G->firstnbr[tail[e]]++;
     G->nbr[i] = head[e];
   }
   // the loop above shifted firstnbr[] left; shift it back right
-  cilk_for (v = G->nv; v > 0; v--) G->firstnbr[v] = G->firstnbr[v-1];
+  for (v = G->nv; v > 0; v--) G->firstnbr[v] = G->firstnbr[v-1];
   G->firstnbr[0] = 0;
   return G;
 }

@@ -131,18 +131,18 @@ void process_layer(graph* G, Bag* &in_bag, Bag_reducer* &out_bag,int thislevel, 
 
   //cout << "backbone[2]: "<< in_bag->backbone[2]->root << endl;
   if (in_bag->n_vertices() < 128) {
-    for(int i = 0; i < in_bag->backbone_size; i++) { // CILK HERE
-      // cout << "before walk_bag ITER: " << i << endl;
+    cilk_for(int i = 0; i < in_bag->backbone_size; i++) { // CILK HERE
+      cout << "before walk_bag ITER: " << i << endl;
       if(in_bag->backbone[i]!=NULL)
         walk_bag(G, in_bag->backbone[i]->root, out_bag, thislevel, level, parent);
-      // cout << "after walk_bag ITER: " << i << endl;
+      cout << "after walk_bag ITER: " << i << endl;
     }
     return;
   }
   Bag* new_bag = in_bag->bag_split();
-  process_layer(G,new_bag, out_bag, thislevel, level, parent); //CILK HERE
+  cilk_spawn process_layer(G,new_bag, out_bag, thislevel, level, parent); //CILK HERE
   process_layer(G, in_bag, out_bag, thislevel, level,parent);
-  // cilk_sync; //CILK HERE
+  cilk_sync; //CILK HERE
 }
 
 

@@ -59,7 +59,7 @@ graph * graph_from_edge_list (int *tail, int* head, int nedges) {
   G->firstnbr = (int *) calloc(G->nv+1, sizeof(int));
 
   // count neighbors of vertex v in firstnbr[v+1],
-  cilk_for (e = 0; e < G->ne; e++) G->firstnbr[tail[e]+1]++; // good
+  for (e = 0; e < G->ne; e++) G->firstnbr[tail[e]+1]++; // good
 
   // cumulative sum of neighbors gives firstnbr[] values
   for (v = 0; v < G->nv; v++) G->firstnbr[v+1] += G->firstnbr[v];

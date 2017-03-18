@@ -88,25 +88,3 @@ Bag* Bag::bag_split(){
   }
   return s2;
 }
-
-int* Bag::write_array()
-{
-  int size = this->n_vertices();
-  int* array = new int [size];
-  int count = 0;
-  for(int i = 0; i < this->backbone_size; i++){
-    if(this->backbone[i] != NULL)
-      recursive_write_array(array, this->backbone[i]->root, count);
-  }
-
-  return array;
-}
-
-void Bag::recursive_write_array(int* & array, Node* node, int &count)
-{
-  if (node->left != NULL)
-    recursive_write_array(array, node->left, count);
-  array[count++] = node->vertex;
-  if (node->right != NULL)
-    recursive_write_array(array, node->right, count);
-}

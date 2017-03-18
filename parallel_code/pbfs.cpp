@@ -131,7 +131,7 @@ void process_layer(graph* G, Bag* &in_bag, Bag_reducer* &out_bag,int thislevel, 
 
   //cout << "backbone[2]: "<< in_bag->backbone[2]->root << endl;
   if (in_bag->n_vertices() < 128) {
-    cilk_for(int i = 0; i < in_bag->n_vertices(); i++) {
+    cilk_for(int i = 0; i < in_bag->backbone_size; i++) {
       cout << "before walk_bag ITER: " << i << endl;
       if(in_bag->backbone[i]!=NULL)
         walk_bag(G, in_bag->backbone[i]->root, out_bag, thislevel, level, parent);

@@ -44,7 +44,8 @@ int read_edge_list (int **tailp, int **headp) {
 
 graph * graph_from_edge_list (int *tail, int* head, int nedges) {
   graph *G;
-  int i, e, v, maxv;
+  int i, e, v;
+  cilk::reducer< cilk::op_max<int> > maxv;
   G = (graph *) calloc(1, sizeof(graph));
   G->ne = nedges;
   maxv = 0;
@@ -54,7 +55,7 @@ graph * graph_from_edge_list (int *tail, int* head, int nedges) {
     if (tail[e] > maxv) maxv = tail[e];
     if (head[e] > maxv) maxv = head[e];
   }
-  G->nv = maxv+1;
+  G->nv = maxv.get_value()+1;
   G->nbr = (int *) calloc(G->ne, sizeof(int));
   G->firstnbr = (int *) calloc(G->nv+1, sizeof(int));
 

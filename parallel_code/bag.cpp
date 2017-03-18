@@ -80,7 +80,11 @@ Bag* Bag::bag_split(){
       this->backbone[i] = NULL;
     }
   }
-  if(y != NULL)
+  if(y != NULL){
     this->bag_insert(y->root->vertex);
+    y->remove_all(y->root);
+    delete y;
+    y = NULL;
+  }
   return s2;
 }

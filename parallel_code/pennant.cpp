@@ -8,6 +8,8 @@ Pennant::Pennant(int vertex) {
   this->root = new Node(vertex);
 }
 
+Pennant::~Pennant() {}
+
 Pennant* Pennant::pennant_union(Pennant* y) {
   if(y==NULL){
     return this;
@@ -108,4 +110,10 @@ Pennant* Pennant::pennant_split() {
     return y;
   }
   return NULL;
+}
+
+void Pennant::remove_all(Node* node) {
+  if (node->left != NULL) remove_all(node->left);
+  if (node->right != NULL) remove_all(node->right);
+  delete node;
 }

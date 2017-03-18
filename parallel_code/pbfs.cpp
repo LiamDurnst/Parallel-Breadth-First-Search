@@ -11,6 +11,7 @@
 #include <iostream>
 #include <math.h>
 #include <sys/time.h>   // timer
+#include <cilk/reducer_max.h>
 
 using namespace std;
 

@@ -128,7 +128,7 @@ void process_layer(graph* G, Bag* &in_bag, Bag_reducer* &out_bag,int thislevel, 
   // spawn PROCESS_LAYER(new_bag, out_bag, d)
   // PROCESS_LAYER(in_bag, out_bag, d)
   // sync
-
+  cout << "backbone[2]: "in_bag->backbone[2]->root << endl;
   if (in_bag->n_vertices() < 128) {
     cilk_for(int i = 0; i < in_bag->n_vertices(); i++) {
       cout << "before walk_bag ITER: " << i << endl;

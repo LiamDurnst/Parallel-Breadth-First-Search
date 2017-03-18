@@ -62,7 +62,7 @@ graph * graph_from_edge_list (int *tail, int* head, int nedges) {
   cilk_for (e = 0; e < G->ne; e++) G->firstnbr[tail[e]+1]++;
 
   // cumulative sum of neighbors gives firstnbr[] values
-  clik_for (v = 0; v < G->nv; v++) G->firstnbr[v+1] += G->firstnbr[v];
+  cilk_for (v = 0; v < G->nv; v++) G->firstnbr[v+1] += G->firstnbr[v];
 
   // pass through edges, slotting each one into the CSR structure
   for (e = 0; e < G->ne; e++) {

@@ -101,7 +101,7 @@ void walk_bag(graph* G, Node* root, Bag_reducer* &out_bag, int thislevel, int* &
   int current_node = root->vertex;
   int end = G->firstnbr[current_node + 1];
   // cout << "Current node: " << current_node << endl;
-  for (int u = G->firstnbr[current_node]; u < end; u++) { // cilk_for
+  cilk_for (int u = G->firstnbr[current_node]; u < end; u++) { // cilk_for
     int current_neighbor = G->nbr[u];
     // cout<< "current_neighbor: " << current_neighbor << endl;
     if (level[current_neighbor] == -1) {
@@ -131,18 +131,18 @@ void process_layer(graph* G, Bag* &in_bag, Bag_reducer* &out_bag,int thislevel, 
 
   //cout << "backbone[2]: "<< in_bag->backbone[2]->root << endl;
   if (in_bag->n_vertices() < 128) {
-    cilk_for(int i = 0; i < in_bag->backbone_size; i++) { // CILK HERE
-      cout << "before walk_bag ITER: " << i << endl;
+    for(int i = 0; i < in_bag->backbone_size; i++) { // CILK HERE
+      // cout << "before walk_bag ITER: " << i << endl;
       if(in_bag->backbone[i]!=NULL)
         walk_bag(G, in_bag->backbone[i]->root, out_bag, thislevel, level, parent);
-      cout << "after walk_bag ITER: " << i << endl;
+      // cout << "after walk_bag ITER: " << i << endl;
     }
     return;
   }
   Bag* new_bag = in_bag->bag_split();
-  cilk_spawn process_layer(G,new_bag, out_bag, thislevel, level, parent); //CILK HERE
+  process_layer(G,new_bag, out_bag, thislevel, level, parent); //CILK HERE
   process_layer(G, in_bag, out_bag, thislevel, level,parent);
-  cilk_sync; //CILK HERE
+  // cilk_sync; //CILK HERE
 }
 
 

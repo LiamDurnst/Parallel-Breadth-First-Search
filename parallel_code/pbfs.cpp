@@ -100,10 +100,8 @@ void walk_bag(graph* G, Node* root, Bag_reducer* &out_bag, int thislevel, int* &
 
   int current_node = root->vertex;
   int end = G->firstnbr[current_node + 1];
-  // cout << "Current node: " << current_node << endl;
   for(int u = G->firstnbr[current_node]; u < end; u++) { // cilk_for
     int current_neighbor = G->nbr[u];
-    // cout<< "current_neighbor: " << current_neighbor << endl;
     if (level[current_neighbor] == -1) {
       parent[current_neighbor] = current_node;
       level[current_neighbor] = thislevel + 1;
@@ -130,13 +128,10 @@ void process_layer(graph* G, Bag* &in_bag, Bag_reducer* &out_bag,int thislevel, 
   // PROCESS_LAYER(in_bag, out_bag, d)
   // sync
 
-  //cout << "backbone[2]: "<< in_bag->backbone[2]->root << endl;
   if (in_bag->n_vertices() < 128) {
     cilk_for(int i = 0; i < in_bag->backbone_size; i++) { // CILK HERE
-      // cout << "before walk_bag ITER: " << i << endl;
       if(in_bag->backbone[i]!=NULL)
         walk_bag(G, in_bag->backbone[i]->root, out_bag, thislevel, level, parent);
-      // cout << "after walk_bag ITER: " << i << endl;
     }
     return;
   }
@@ -167,31 +162,19 @@ void pbfs(int s, graph *G, int **levelp, int *nlevelsp, int **levelsizep, int **
   parent = *parentp = (int *) calloc(G->nv, sizeof(int));
 
   cilk_for (int v = 0; v < G->nv; v++){
-    level[v] = -1;parent[v] = -1;
+    level[v] = -1;
+    parent[v] = -1;
   }
-//  cilk_for (int v = 0; v < G->nv; v++) parent[v] = -1;
-
-  //cout << "after init level and parent" << endl;
-
   // assign the starting vertex level 0 and put it on the queue to explore
   thislevel = 0;
   level[s] = 0;
   levelsize[0] = 1;
   Bag* bag = new Bag();
   bag->bag_insert(s);
-
-  //cout << "after init bag" << endl;
-
   while (!bag->is_empty()) {
     levelsize[thislevel] = bag->n_vertices();
     Bag_reducer* out_bag = new Bag_reducer();
-
-    // cout << "before process_layer" << endl;
-
     process_layer(G,bag,out_bag,thislevel,level,parent);
-
-    // cout << "after process_layer" << endl;
-
     thislevel++;
     //we want to reset our bag to be fresh in our next iteration of process layer
     bag->reset();

@@ -151,7 +151,7 @@ void process_layer(graph* G, Bag* &in_bag, Bag_reducer* &out_bag,int thislevel, 
   // PROCESS_LAYER(in_bag, out_bag, d)
   // sync
   if (in_bag->n_vertices() < 128) {
-    cilk_for(int i = 0; i < in_bag->backbone_size; i++) { // CILK HERE
+    for(int i = 0; i < in_bag->backbone_size; i++) { // CILK HERE
       if(in_bag->backbone[i]!=NULL)
         walk_bag(G, in_bag->backbone[i]->root, out_bag, thislevel, level, parent);
     }

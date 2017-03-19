@@ -117,65 +117,136 @@ void print_CSR_graph (graph *G) {
 }
 
 
-void walk_bag(graph* G, Node* root, Bag_reducer* &out_bag, int thislevel, int* & level, int* & parent) {
-  if (root == NULL)
-    return;
+// void walk_bag(graph* G, Node* root, Bag_reducer* &out_bag, int thislevel, int* & level, int* & parent) {
+//   if (root == NULL)
+//     return;
+//
+//   int current_node = root->vertex;
+//   int end = G->firstnbr[current_node + 1];
+//   for(int u = G->firstnbr[current_node]; u < end; u++) { // cilk_for
+//     int current_neighbor = G->nbr[u];
+//     if (level[current_neighbor] == -1) {
+//       parent[current_neighbor] = current_node;
+//       level[current_neighbor] = thislevel + 1;
+//       out_bag->bag_insert(current_neighbor);
+//     }
+//   }
+//
+//   walk_bag(G, root->left, out_bag, thislevel, level, parent); // cilk_spawn
+//   walk_bag(G, root->right, out_bag, thislevel, level, parent);
+//   //cilk_sync;
+// }
+//
+//
+// void process_layer(graph* G, Bag* &in_bag, Bag_reducer* &out_bag,int thislevel, int* & level, int* & parent) {
+//   // if BAG_SIZE(in_bag) < GRAINSIZE
+//   //   for each u in in_bag
+//   //     parallel for each v in Adj[u]
+//   //       if v.dist == -1
+//   //         v.dist = d+1                  // benign race
+//   //         BAG_INSERT(out_bag, v)
+//   //   return
+//   // new_bag = BAG_SPLIT(in_bag)
+//   // spawn PROCESS_LAYER(new_bag, out_bag, d)
+//   // PROCESS_LAYER(in_bag, out_bag, d)
+//   // sync
+//   if (in_bag->n_vertices() < 128) {
+//     cilk_for(int i = 0; i < in_bag->backbone_size; i++) { // CILK HERE
+//       if(in_bag->backbone[i]!=NULL)
+//         walk_bag(G, in_bag->backbone[i]->root, out_bag, thislevel, level, parent);
+//     }
+//     return;
+//   }
+//   Bag* new_bag = in_bag->bag_split();
+//   cilk_spawn process_layer(G, new_bag, out_bag, thislevel, level, parent); //CILK HERE
+//   process_layer(G, in_bag, out_bag, thislevel, level,parent);
+//   cilk_sync; //CILK HERE
+// }
+//
+//
+// void pbfs(int s, graph *G, int **levelp, int *nlevelsp, int **levelsizep, int **parentp) {
+//   // parallel for each vertex v in V(G) - {v_0}
+//   //   v.dist = -1
+//   // v_0.dist = 0
+//   // d = 0
+//   // v_0 = BAG_CREATE()
+//   // BAG_INSERT(V_0, v_0)
+//   // while !BAG-IS-EMPTY(V_d)
+//   //   V_d+1 = new reducer BAG_CREATE()
+//   //   PROCESS_LAYER(revert V_d, V_d+1, d)
+//   //   d = d+1
+//
+//   int *level, *levelsize, *parent;
+//   int thislevel;
+//
+//   level = *levelp = (int *) calloc(G->nv, sizeof(int));
+//   levelsize = *levelsizep = (int *) calloc(G->nv, sizeof(int));
+//   parent = *parentp = (int *) calloc(G->nv, sizeof(int));
+//
+//   cilk_for (int v = 0; v < G->nv; v++){
+//     level[v] = -1;
+//     parent[v] = -1;
+//   }
+//   // assign the starting vertex level 0 and put it on the queue to explore
+//   thislevel = 0;
+//   level[s] = 0;
+//   levelsize[0] = 1;
+//   Bag* bag = new Bag();
+//   bag->bag_insert(s);
+//   while (!bag->is_empty()) {
+//     levelsize[thislevel] = bag->n_vertices();
+//     Bag_reducer* out_bag = new Bag_reducer();
+//     process_layer(G,bag,out_bag,thislevel,level,parent);
+//     thislevel++;
+//     //we want to reset our bag to be fresh in our next iteration of process layer
+//     bag->reset();
+//     //copy nodes we got from previous process_layer iteration into our cleared bag
+//     for(int i=0; i<bag->backbone_size; i++){
+//       if(out_bag->get_backbone(i)!=NULL)
+//         bag->backbone[i] = out_bag->get_backbone(i);
+//     }
+//   }
+//   *nlevelsp = thislevel;
+// }
+//
 
-  int current_node = root->vertex;
-  int end = G->firstnbr[current_node + 1];
-  for(int u = G->firstnbr[current_node]; u < end; u++) { // cilk_for
-    int current_neighbor = G->nbr[u];
-    if (level[current_neighbor] == -1) {
-      parent[current_neighbor] = current_node;
-      level[current_neighbor] = thislevel + 1;
-      out_bag->bag_insert(current_neighbor);
+void process_layer(graph *G, Bag* & in_bag, Bag_reducer* & out_bag, int thislevel, int* & level, int* & parent)
+{
+  //grainsize
+  if(in_bag->size() < 200)
+  {
+    int *bag_array = in_bag->write_array();
+    int size = in_bag->size();
+    cilk_for(int i = 0; i < size; i++)
+    {
+
+      int current_node = bag_array[i];
+      int end = G->firstnbr[current_node+1];
+      for(int j = G->firstnbr[current_node]; j < end; j++)
+      {
+	int current_neighbor = G->nbr[j];
+	if(level[current_neighbor] == -1)
+	{
+	  parent[current_neighbor] = current_node;
+	  level[current_neighbor] = thislevel+1;
+	  out_bag->insert(current_neighbor);
+
+	}
+      }
     }
+    delete [] bag_array;
+    return;
   }
 
-  walk_bag(G, root->left, out_bag, thislevel, level, parent); // cilk_spawn
-  walk_bag(G, root->right, out_bag, thislevel, level, parent);
-  //cilk_sync;
+  Bag *new_bag = in_bag->split();
+  cilk_spawn process_layer(G, new_bag, out_bag, thislevel, level, parent);
+  process_layer(G, in_bag, out_bag, thislevel, level, parent);
+  cilk_sync;
+
 }
 
-
-void process_layer(graph* G, Bag* &in_bag, Bag_reducer* &out_bag,int thislevel, int* & level, int* & parent) {
-  // if BAG_SIZE(in_bag) < GRAINSIZE
-  //   for each u in in_bag
-  //     parallel for each v in Adj[u]
-  //       if v.dist == -1
-  //         v.dist = d+1                  // benign race
-  //         BAG_INSERT(out_bag, v)
-  //   return
-  // new_bag = BAG_SPLIT(in_bag)
-  // spawn PROCESS_LAYER(new_bag, out_bag, d)
-  // PROCESS_LAYER(in_bag, out_bag, d)
-  // sync
-  if (in_bag->n_vertices() < 128) {
-    cilk_for(int i = 0; i < in_bag->backbone_size; i++) { // CILK HERE
-      if(in_bag->backbone[i]!=NULL)
-        walk_bag(G, in_bag->backbone[i]->root, out_bag, thislevel, level, parent);
-    }
-    return;
-  }
-  Bag* new_bag = in_bag->bag_split();
-  cilk_spawn process_layer(G, new_bag, out_bag, thislevel, level, parent); //CILK HERE
-  process_layer(G, in_bag, out_bag, thislevel, level,parent);
-  cilk_sync; //CILK HERE
-}
-
-
-void pbfs(int s, graph *G, int **levelp, int *nlevelsp, int **levelsizep, int **parentp) {
-  // parallel for each vertex v in V(G) - {v_0}
-  //   v.dist = -1
-  // v_0.dist = 0
-  // d = 0
-  // v_0 = BAG_CREATE()
-  // BAG_INSERT(V_0, v_0)
-  // while !BAG-IS-EMPTY(V_d)
-  //   V_d+1 = new reducer BAG_CREATE()
-  //   PROCESS_LAYER(revert V_d, V_d+1, d)
-  //   d = d+1
-
+void pbfs (int s, graph *G, int **levelp, int *nlevelsp,
+         int **levelsizep, int **parentp) {
   int *level, *levelsize, *parent;
   int thislevel;
 
@@ -183,30 +254,31 @@ void pbfs(int s, graph *G, int **levelp, int *nlevelsp, int **levelsizep, int **
   levelsize = *levelsizep = (int *) calloc(G->nv, sizeof(int));
   parent = *parentp = (int *) calloc(G->nv, sizeof(int));
 
-  cilk_for (int v = 0; v < G->nv; v++){
-    level[v] = -1;
-    parent[v] = -1;
-  }
+
+  cilk_for (int v = 0; v < G->nv; v++) level[v] = -1;
+  cilk_for (int v = 0; v < G->nv; v++) parent[v] = -1;
+
   // assign the starting vertex level 0 and put it on the queue to explore
   thislevel = 0;
   level[s] = 0;
   levelsize[0] = 1;
   Bag* bag = new Bag();
-  bag->bag_insert(s);
-  while (!bag->is_empty()) {
-    levelsize[thislevel] = bag->n_vertices();
+  bag->insert(s);//bag->insert(s);
+  // loop over levels, then over vertices at this level, then over neighbors
+  while (!bag->empty())
+  {
+    levelsize[thislevel] = bag->size();
     Bag_reducer* out_bag = new Bag_reducer();
-    process_layer(G,bag,out_bag,thislevel,level,parent);
+    process_layer(G, bag, out_bag, thislevel, level, parent);
     thislevel++;
-    //we want to reset our bag to be fresh in our next iteration of process layer
-    bag->reset();
-    //copy nodes we got from previous process_layer iteration into our cleared bag
-    for(int i=0; i<bag->backbone_size; i++){
-      if(out_bag->get_backbone(i)!=NULL)
-        bag->backbone[i] = out_bag->get_backbone(i);
+    bag->clear();
+    for(int i = 0; i < bag->forest_size; i++){
+      if (out_bag->get_forest(i) != NULL)
+	bag->forest[i] = out_bag->get_forest(i);
     }
   }
   *nlevelsp = thislevel;
+
 }
 
 

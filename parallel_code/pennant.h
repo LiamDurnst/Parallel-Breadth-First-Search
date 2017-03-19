@@ -3,36 +3,80 @@
 
 #include <stdio.h>
 
-struct Node {
-  int vertex;
-  Node* left;
-  Node* right;
+extern "C++" {
 
-  Node() {
-    vertex = 0;
-    left = NULL;
-    right = NULL;
-  }
+  struct Node{
+    Node* left;
+    Node* right;
+    int item;
 
-  Node(int v) {
-    vertex = v;
-    left = NULL;
-    right = NULL;
-  }
-};
+    Node(){
+      left = NULL;
+      right = NULL;
+      item = 0;
+    }
+    Node(int value){
+      left = NULL;
+      right = NULL;
+      item = value;
+    }
+  };
 
-class Pennant {
+  class Pennant{
+
   public:
     Pennant();
-    Pennant(int vertex);
+    Pennant(int value);
     ~Pennant();
-
-    Pennant* pennant_union(Pennant* y);
-    Pennant* full_adder(Pennant* y, Pennant* &z);
-    Pennant* pennant_split();
+    Pennant* Pmerge(Pennant* y);
+    Pennant* Pmerge_FA(Pennant* x, Pennant* & y);
+    Pennant* Psplit();
     void remove_all(Node* node);
 
+    //private:
     Node* root;
-};
+
+  };
+
+
+
+}//end extern c++
+
+
 
 #endif
+
+
+// struct Node {
+//   int vertex;
+//   Node* left;
+//   Node* right;
+//
+//   Node() {
+//     vertex = 0;
+//     left = NULL;
+//     right = NULL;
+//   }
+//
+//   Node(int v) {
+//     vertex = v;
+//     left = NULL;
+//     right = NULL;
+//   }
+// };
+//
+// class Pennant {
+//   public:
+//     Pennant();
+//     Pennant(int vertex);
+//     ~Pennant();
+//
+//     Pennant* pennant_union(Pennant* y);
+//     Pennant* full_adder(Pennant* y, Pennant* &z);
+//     Pennant* pennant_split();
+//     void remove_all(Node* node);
+//
+//     Node* root;
+// };
+//
+// #endif

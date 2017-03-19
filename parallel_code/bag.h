@@ -11,6 +11,7 @@
 class Bag {
   public:
     Bag();
+    ~Bag();
     void bag_insert(int vertex);
     void bag_union(Bag* bag);
     void reset();

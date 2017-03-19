@@ -11,6 +11,13 @@ Bag::Bag(){
   }
 }
 
+Bag::~Bag()
+{
+  for(int i = 0; i < this->backbone_size; i++)
+    //delete this->forest[i];
+    this->backbone[i] = NULL;
+}
+
 // insert one vertex into bag
 void Bag::bag_insert(int vertex){
   Pennant* newPennant = new Pennant(vertex);

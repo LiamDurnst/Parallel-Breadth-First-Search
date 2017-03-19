@@ -16,8 +16,6 @@ class Bag {
     void reset();
     bool is_empty();
     int n_vertices();
-    int* write_array();
-    void recursive_write_array(int* & array, Node* node, int &count);
     Bag* bag_split();
 
 

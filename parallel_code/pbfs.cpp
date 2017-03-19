@@ -238,7 +238,7 @@ int main(int argc, char* argv[]) {
   struct timeval tv1, tv2;
   double duration;
 
-  double begin = getCurrentTime();
+
   gettimeofday(&tv1, NULL);
   pbfs(startvtx, G, &level, &nlevels, &levelsize, &parent);
   gettimeofday(&tv2, NULL);

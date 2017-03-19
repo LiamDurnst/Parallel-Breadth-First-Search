@@ -4,23 +4,23 @@
 // default constructor for bag
 Bag::Bag(){
   this->backbone_size = 20;
-  this->backbone = new Pennant* [this->backbone_size];
+  this->backbone = new Pennant*[this->backbone_size];
   //set our backbone indices to NULL
-  for(int i=0; i<this->backbone_size; ++i){
+  for (int i=0; i<this->backbone_size; i++){
     this->backbone[i] = NULL;
   }
 }
 
 // insert one vertex into bag
 void Bag::bag_insert(int vertex){
-  Pennant* newPennant = new Pennant(vertex);
-  int iter = 0;
+  int k = 0;
+  Pennant* x = new Pennant(vertex);
   // search for first open index
-  while (this->backbone[iter] != NULL) {
-    newPennant = this->backbone[iter]->pennant_union(newPennant);
-    this->backbone[iter++] = NULL;
+  while (this->backbone[k] != NULL) {
+    x = this->backbone[k]->pennant_union(x);
+    this->backbone[k++] = NULL;
   }
-  this->backbone[iter] = newPennant;
+  this->backbone[k] = x;
 }
 
 // merge 'this' with 'bag'
@@ -34,7 +34,7 @@ void Bag::bag_union(Bag* bag){
 // check if bag is empty
 bool Bag::is_empty(){
   for(int i=0; i<this->backbone_size; i++) {
-    if(this->backbone[i]!=NULL)
+    if(this->backbone[i] != NULL)
       return false;
   }
   return true;
@@ -51,7 +51,7 @@ void Bag::reset(){
 int Bag::n_vertices(){
   int result = 0;
   for(int i=0; i<this->backbone_size; i++){
-    if(this->backbone[i]!=NULL)
+    if(this->backbone[i] != NULL)
       result += pow(2,i);
   }
   return result;

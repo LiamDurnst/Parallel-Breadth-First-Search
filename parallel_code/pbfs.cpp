@@ -134,7 +134,7 @@ void walk_bag(graph* G, Node* root, Bag_reducer* &out_bag, int thislevel, int* &
 
   walk_bag(G, root->left, out_bag, thislevel, level, parent); // cilk_spawn
   walk_bag(G, root->right, out_bag, thislevel, level, parent);
-  // cilk_sync;
+  //cilk_sync;
 }
 
 
@@ -151,7 +151,7 @@ void process_layer(graph* G, Bag* &in_bag, Bag_reducer* &out_bag,int thislevel, 
   // PROCESS_LAYER(in_bag, out_bag, d)
   // sync
   if (in_bag->n_vertices() < 128) {
-    for(int i = 0; i < in_bag->backbone_size; i++) { // CILK HERE
+    cilk_for(int i = 0; i < in_bag->backbone_size; i++) { // CILK HERE
       if(in_bag->backbone[i]!=NULL)
         walk_bag(G, in_bag->backbone[i]->root, out_bag, thislevel, level, parent);
     }

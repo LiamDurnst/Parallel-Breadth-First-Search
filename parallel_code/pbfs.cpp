@@ -15,18 +15,6 @@
 
 using namespace std;
 
-
-double getTime(struct timeval arg)
-{
-  return arg.tv_sec + (arg.tv_usec / 1000000.0);
-}
-double getCurrentTime()
-{
-  struct timeval t;
-  gettimeofday(&t, NULL);
-  return getTime(t);
-}
-
 typedef struct graphstruct { // A graph in compressed-adjacency-list (CSR) form
   int nv;            // number of vertices
   int ne;            // number of edges
@@ -251,16 +239,15 @@ int main(int argc, char* argv[]) {
   double duration;
 
   double begin = getCurrentTime();
-  // gettimeofday(&tv1, NULL);
+  gettimeofday(&tv1, NULL);
   pbfs(startvtx, G, &level, &nlevels, &levelsize, &parent);
-  // gettimeofday(&tv2, NULL);
+  gettimeofday(&tv2, NULL);
 
-  // double start, end;
-  // start = (double)tv1.tv_sec + (double)tv1.tv_usec/1000000.0;
-  // end = (double)tv2.tv_sec + (double)tv2.tv_usec/1000000.0;
-  //
-  // duration = end - start;
-  cout << "Time in seconds: " << getCurrentTime()-begin << " seconds" << endl;
+  double start, end;
+  start = (double)tv1.tv_sec + (double)tv1.tv_usec/1000000.0;
+  end = (double)tv2.tv_sec + (double)tv2.tv_usec/1000000.0;
+
+  duration = end - start;
 
   reached = 0;
   for (i = 0; i < nlevels; i++) reached += levelsize[i];
@@ -273,6 +260,7 @@ int main(int argc, char* argv[]) {
   }
   printf("\n");
 
+  cout << "Time in seconds: " << duration << " seconds" << endl;
 
 
 }

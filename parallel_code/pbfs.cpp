@@ -132,7 +132,7 @@ void walk_bag(graph* G, Node* root, Bag_reducer* &out_bag, int thislevel, int* &
     }
   }
 
-  walk_bag(G, root->left, out_bag, thislevel, level, parent); // cilk_spawn
+  cilk_spawn walk_bag(G, root->left, out_bag, thislevel, level, parent); // cilk_spawn
   walk_bag(G, root->right, out_bag, thislevel, level, parent);
   // cilk_sync;
 }
